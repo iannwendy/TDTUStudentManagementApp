@@ -1,93 +1,93 @@
 # TDTU Student Information Management System
 
-Hệ thống quản lý thông tin sinh viên TDTU - Ứng dụng Android hiện đại được xây dựng với Jetpack Compose và Firebase.
+A modern Android application built with Jetpack Compose and Firebase for managing student and user information at TDTU.
 
-## 📋 Tổng quan
+## Overview
 
-TDTU Student Information Management System là một ứng dụng Android quản lý toàn diện thông tin sinh viên và người dùng, được thiết kế để hỗ trợ các hoạt động quản lý của trường đại học. Hệ thống cung cấp các tính năng quản lý người dùng, quản lý sinh viên, theo dõi chứng chỉ và phân quyền truy cập linh hoạt.
+TDTU Student Information Management System is a comprehensive Android application for managing student and user information, designed to support university management operations. The system provides user management, student management, certificate tracking, and flexible access control features.
 
-## 🏗️ Kiến trúc & Công nghệ
+## Architecture & Technology
 
-### Kiến trúc
-- **MVVM (Model-View-ViewModel)**: Tách biệt logic nghiệp vụ và UI
-- **Repository Pattern**: Quản lý truy cập dữ liệu tập trung
-- **Dependency Injection**: Sử dụng Hilt để quản lý dependencies
+### Architecture
+- **MVVM (Model-View-ViewModel)**: Separation of business logic and UI
+- **Repository Pattern**: Centralized data access management
+- **Dependency Injection**: Using Hilt for dependency management
 
-### Công nghệ sử dụng
+### Technologies Used
 - **UI Framework**: Jetpack Compose - Modern Android UI toolkit
 - **Backend**: Firebase
-  - **Firebase Authentication**: Xác thực người dùng
-  - **Cloud Firestore**: Database NoSQL real-time
-  - **Firebase Storage**: Lưu trữ file (ảnh đại diện, chứng chỉ)
+  - **Firebase Authentication**: User authentication
+  - **Cloud Firestore**: Real-time NoSQL database
+  - **Firebase Storage**: File storage (profile pictures, certificates)
 - **Dependency Injection**: Hilt (Dagger)
 - **Asynchronous**: Kotlin Coroutines & Flow
 - **Image Loading**: Coil
 
-## ✨ Tính năng chính
+## Key Features
 
-### 🔐 Xác thực & Bảo mật
-- Đăng nhập/Đăng xuất với Email/Password
-- Quản lý phiên đăng nhập
-- Theo dõi lịch sử đăng nhập (chỉ Admin)
-- Quản lý trạng thái tài khoản (Normal/Locked)
+### Authentication & Security
+- Login/Logout with Email/Password
+- Session management
+- Login history tracking (Admin only)
+- Account status management (Normal/Locked)
 
-### 👥 Quản lý người dùng
-- Xem danh sách người dùng với tìm kiếm và lọc
-- Thêm/Sửa/Xóa người dùng (Admin only)
-- Quản lý vai trò người dùng (Admin/Manager/Employee)
-- Cập nhật ảnh đại diện
-- Xem lịch sử đăng nhập của người dùng (Admin only)
+### User Management
+- View user list with search and filter
+- Add/Edit/Delete users (Admin only)
+- Manage user roles (Admin/Manager/Employee)
+- Update profile picture
+- View user login history (Admin only)
 
-### 🎓 Quản lý sinh viên
-- Xem danh sách sinh viên với tìm kiếm nâng cao
-- Thêm/Sửa/Xóa thông tin sinh viên
-- Sắp xếp sinh viên theo nhiều tiêu chí (tên, GPA, năm học, v.v.)
-- Quản lý chứng chỉ sinh viên
-- Xem thông tin chi tiết sinh viên
+### Student Management
+- View student list with advanced search
+- Add/Edit/Delete student information
+- Sort students by multiple criteria (name, GPA, year of study, etc.)
+- Manage student certificates
+- View detailed student information
 
-### 📜 Quản lý chứng chỉ
-- Thêm/Sửa/Xóa chứng chỉ cho sinh viên
-- Upload và lưu trữ file chứng chỉ
-- Theo dõi ngày cấp và ngày hết hạn
+### Certificate Management
+- Add/Edit/Delete certificates for students
+- Upload and store certificate files
+- Track issue date and expiry date
 
-### 📊 Dashboard
-- Tổng quan thống kê hệ thống
-- Số lượng người dùng, sinh viên
-- Truy cập nhanh đến các chức năng chính
+### Dashboard
+- System statistics overview
+- User and student counts
+- Quick access to main features
 
-### 📥 Nhập/Xuất dữ liệu
-- Import sinh viên từ file CSV
-- Export danh sách sinh viên ra CSV
-- Import/Export chứng chỉ
+### Data Import/Export
+- Import students from CSV file
+- Export student list to CSV
+- Import/Export certificates
 
-## 🔑 Hệ thống phân quyền
+## Access Control System
 
-Hệ thống hỗ trợ 3 cấp độ phân quyền:
+The system supports 3 levels of access control:
 
-### 👑 Admin
-- **Toàn quyền truy cập** hệ thống
-- Quản lý người dùng (thêm/sửa/xóa)
-- Quản lý sinh viên và chứng chỉ
-- Xem lịch sử đăng nhập của tất cả người dùng
-- Import/Export dữ liệu
+### Admin
+- **Full system access**
+- User management (add/edit/delete)
+- Student and certificate management
+- View login history of all users
+- Import/Export data
 
-### 👔 Manager
-- Xem danh sách người dùng (không xem lịch sử đăng nhập)
-- Quản lý sinh viên và chứng chỉ (thêm/sửa/xóa)
-- Import/Export dữ liệu
-- Cập nhật ảnh đại diện cá nhân
+### Manager
+- View user list (cannot view login history)
+- Manage students and certificates (add/edit/delete)
+- Import/Export data
+- Update personal profile picture
 
-### 👤 Employee
-- Xem danh sách người dùng (không xem lịch sử đăng nhập)
-- Xem danh sách sinh viên (chỉ đọc)
-- Cập nhật ảnh đại diện cá nhân
+### Employee
+- View user list (cannot view login history)
+- View student list (read-only)
+- Update personal profile picture
 
-## 📁 Cấu trúc dự án
+## Project Structure
 
 ```
 app/src/main/java/com/example/tdtustudentinformationmanagement/
 ├── data/
-│   ├── firebase/          # Cấu hình Firebase
+│   ├── firebase/          # Firebase configuration
 │   ├── model/             # Data models (User, Student, Certificate)
 │   └── repository/        # Repository layer (Auth, User, Student, Storage)
 ├── di/                    # Dependency Injection modules
@@ -103,15 +103,15 @@ app/src/main/java/com/example/tdtustudentinformationmanagement/
 └── utils/                 # Utility functions (CSV parsing)
 ```
 
-## 🚀 Bắt đầu
+## Getting Started
 
-### Yêu cầu hệ thống
-- Android Studio Hedgehog | 2023.1.1 hoặc mới hơn
+### System Requirements
+- Android Studio Hedgehog | 2023.1.1 or newer
 - JDK 17
 - Android SDK 24+ (Android 7.0+)
-- Firebase project đã được cấu hình
+- Configured Firebase project
 
-### Cài đặt
+### Installation
 
 1. **Clone repository**
    ```bash
@@ -119,61 +119,61 @@ app/src/main/java/com/example/tdtustudentinformationmanagement/
    cd TDTUStudentManagementApp
    ```
 
-2. **Cấu hình Firebase**
-   - Tạo Firebase project tại [Firebase Console](https://console.firebase.google.com/)
-   - Tải file `google-services.json` và đặt vào thư mục `app/`
-   - Xem hướng dẫn chi tiết trong [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
+2. **Configure Firebase**
+   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+   - Download `google-services.json` file and place it in the `app/` folder
+   - See detailed instructions in [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
 
-3. **Sync và Build**
-   - Mở project trong Android Studio
-   - Sync project với Gradle files
-   - Build và chạy ứng dụng
+3. **Sync and Build**
+   - Open the project in Android Studio
+   - Sync project with Gradle files
+   - Build and run the application
 
-4. **Đăng nhập**
-   - Tài khoản Admin mặc định: `admin@tdtu.edu.vn` / `admin123456`
-   - Hoặc tạo tài khoản mới thông qua Firebase Console
+4. **Login**
+   - Default Admin account: `admin@tdtu.edu.vn` / `admin123456`
+   - Or create a new account through Firebase Console
 
-## 📚 Tài liệu
+## Documentation
 
-Các tài liệu chi tiết được lưu trong thư mục [`docs/`](docs/):
+Detailed documentation is stored in the [`docs/`](docs/) folder:
 
-- **[FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**: Hướng dẫn cài đặt và cấu hình Firebase
-- **[FIREBASE_TROUBLESHOOTING.md](docs/FIREBASE_TROUBLESHOOTING.md)**: Xử lý sự cố Firebase
-- **[STORAGE_RULES_FIX.md](docs/STORAGE_RULES_FIX.md)**: Cấu hình Security Rules cho Storage
-- **[NETWORK_ERROR_FIX.md](docs/NETWORK_ERROR_FIX.md)**: Xử lý lỗi mạng
-- **[DEBUG_LOGIN_ISSUES.md](docs/DEBUG_LOGIN_ISSUES.md)**: Debug các vấn đề đăng nhập
-- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)**: Hướng dẫn testing
+- **[FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**: Firebase installation and configuration guide
+- **[FIREBASE_TROUBLESHOOTING.md](docs/FIREBASE_TROUBLESHOOTING.md)**: Firebase troubleshooting
+- **[STORAGE_RULES_FIX.md](docs/STORAGE_RULES_FIX.md)**: Storage Security Rules configuration
+- **[NETWORK_ERROR_FIX.md](docs/NETWORK_ERROR_FIX.md)**: Network error handling
+- **[DEBUG_LOGIN_ISSUES.md](docs/DEBUG_LOGIN_ISSUES.md)**: Debug login issues
+- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)**: Testing guide
 
-## 🗄️ Cấu trúc Database
+## Database Structure
 
 ### Collections
 
-- **users**: Thông tin người dùng hệ thống
-- **students**: Thông tin sinh viên
-- **certificates**: Chứng chỉ của sinh viên
-- **login_history**: Lịch sử đăng nhập
+- **users**: System user information
+- **students**: Student information
+- **certificates**: Student certificates
+- **login_history**: Login history
 
-Xem chi tiết cấu trúc database trong [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
+See detailed database structure in [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
 
-## 🔒 Bảo mật
+## Security
 
-- Xác thực người dùng qua Firebase Authentication
-- Security Rules cho Firestore và Storage
-- Phân quyền truy cập theo vai trò
-- Chỉ Admin mới có thể xem lịch sử đăng nhập
+- User authentication via Firebase Authentication
+- Security Rules for Firestore and Storage
+- Role-based access control
+- Only Admin can view login history
 
-## 🤝 Đóng góp
+## Contributing
 
-Mọi đóng góp đều được chào đón! Vui lòng tạo Issue hoặc Pull Request.
+Contributions are welcome! Please create an Issue or Pull Request.
 
-## 📝 License
+## License
 
-Dự án này thuộc về TDTU (Trường Đại học Tôn Đức Thắng).
+This project belongs to TDTU (Ton Duc Thang University).
 
-## 👨‍💻 Tác giả
+## Author
 
 **iannwendy** - [GitHub](https://github.com/iannwendy)
 
 ---
 
-**Lưu ý**: Đảm bảo đã cấu hình đúng Firebase project và Security Rules trước khi sử dụng ứng dụng trong môi trường production.
+**Note**: Ensure that Firebase project and Security Rules are properly configured before using the application in a production environment.

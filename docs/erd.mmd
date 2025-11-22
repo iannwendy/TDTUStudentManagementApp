@@ -1,0 +1,61 @@
+erDiagram
+    USER {
+        string id PK
+        string name
+        string email
+        int age
+        string phoneNumber
+        string status
+        string role
+        string profilePictureUrl
+        timestamp createdAt
+        timestamp updatedAt
+    }
+    
+    LOGIN_HISTORY {
+        string id PK
+        string userId FK
+        timestamp loginTime
+        string deviceInfo
+        string ipAddress
+    }
+    
+    STUDENT {
+        string id PK
+        string studentId
+        string name
+        timestamp dateOfBirth
+        string gender
+        string address
+        string phoneNumber
+        string email
+        string major
+        int yearOfStudy
+        double gpa
+        string status
+        timestamp createdAt
+        timestamp updatedAt
+    }
+    
+    CERTIFICATE {
+        string id PK
+        string studentId FK
+        string name
+        string issuingOrganization
+        timestamp issueDate
+        timestamp expiryDate
+        string certificateUrl
+        string description
+        timestamp createdAt
+        timestamp updatedAt
+    }
+    
+    FIREBASE_STORAGE {
+        string profile_pictures
+        string certificates
+    }
+    
+    USER ||--o{ LOGIN_HISTORY : "has"
+    STUDENT ||--o{ CERTIFICATE : "has"
+    USER ||--|| FIREBASE_STORAGE : "stores avatar in"
+    CERTIFICATE ||--|| FIREBASE_STORAGE : "stores file in"

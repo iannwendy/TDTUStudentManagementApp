@@ -43,6 +43,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -116,13 +118,75 @@ fun MainScreen(
     val importExportState by importExportViewModel.uiState.collectAsState()
     val isLoggingOut by mainViewModel.isLoggingOut.collectAsState()
 
-    val sections = availableSections(userRole)
-    var selectedSection by rememberSaveable(userRole) { mutableStateOf(sections.first()) }
+    val sections = remember(userRole) { availableSections(userRole) }
+    var selectedSection by rememberSaveable(userRole) { 
+        mutableStateOf(availableSections(userRole).firstOrNull() ?: MainSection.DASHBOARD) 
+    }
     val configuration = LocalConfiguration.current
     val isLargeScreen = configuration.screenWidthDp >= 900
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    // Reload all data when user changes (e.g., switching accounts)
+    // This triggers when currentUser.id changes, indicating a new user
+    LaunchedEffect(currentUser?.id) {
+        if (currentUser != null) {
+            // Wait for userRole to be loaded (it's loaded by MainViewModel's auth observer)
+            // Use first() to wait for non-null userRole or timeout
+            withTimeoutOrNull(3000) {
+                mainViewModel.userRole.first { it != null }
+            }
+            // Now reload all ViewModels' data after user and role are loaded
+            mainViewModel.refreshDashboard()
+            usersViewModel.loadUsers()
+            studentsViewModel.loadStudents()
+        }
+    }
+    
+    // Reset selected section and reload ViewModels when user role changes
+    LaunchedEffect(userRole) {
+        if (userRole != null && currentUser != null) {
+            // Reset selected section based on new role
+            val newSections = availableSections(userRole)
+            if (newSections.isNotEmpty()) {
+                // If current section is not available for new role, switch to first available
+                if (selectedSection !in newSections) {
+                    selectedSection = newSections.first()
+                }
+            } else {
+                // If no sections available, default to dashboard
+                selectedSection = MainSection.DASHBOARD
+            }
+            
+            // Reload all ViewModels when role is loaded/changed
+            usersViewModel.loadUsers()
+            studentsViewModel.loadStudents()
+        }
+    }
+
+    // Load data when navigating to a section (lazy loading)
+    LaunchedEffect(selectedSection) {
+        when (selectedSection) {
+            MainSection.DASHBOARD -> {
+                mainViewModel.refreshDashboard()
+                studentsViewModel.loadStudents()
+                usersViewModel.loadUsers()
+            }
+            MainSection.USERS -> {
+                usersViewModel.loadUsers()
+            }
+            MainSection.STUDENTS -> {
+                studentsViewModel.loadStudents()
+            }
+            MainSection.IMPORT_EXPORT -> {
+                studentsViewModel.loadStudents()
+            }
+            MainSection.PROFILE -> {
+                // Profile doesn't need additional loading
+            }
+        }
+    }
 
     LaunchedEffect(profilePictureState.successMessage, profilePictureState.errorMessage) {
         profilePictureState.successMessage?.let {

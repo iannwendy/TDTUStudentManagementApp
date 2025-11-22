@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -56,22 +58,66 @@ class MainViewModel @Inject constructor(
     private val _isLoggingOut = MutableStateFlow(false)
     val isLoggingOut: StateFlow<Boolean> = _isLoggingOut.asStateFlow()
     
+    private var lastFirebaseUserId: String? = null
+    
     init {
+        // Observe Firebase Auth state changes to detect user switches
+        viewModelScope.launch {
+            authRepository.observeAuthState()
+                .catch { e ->
+                    // Handle errors silently
+                    println("Error observing auth state: ${e.message}")
+                }
+                .collect { firebaseUser ->
+                    val currentFirebaseUserId = firebaseUser?.uid
+                    
+                    // When Firebase Auth user changes, reload current user and role
+                    if (firebaseUser != null) {
+                        // Check if user actually changed
+                        if (currentFirebaseUserId != lastFirebaseUserId) {
+                            // Clear old state first
+                            _currentUser.value = null
+                            _userRole.value = null
+                            
+                            // Update last user ID
+                            lastFirebaseUserId = currentFirebaseUserId
+                            
+                            // Reload new user data
+                            loadCurrentUserInternal()
+                            // Refresh dashboard when user changes
+                            refreshDashboard()
+                        }
+                    } else {
+                        // User logged out, clear state
+                        lastFirebaseUserId = null
+                        _currentUser.value = null
+                        _userRole.value = null
+                        _dashboardState.value = DashboardState()
+                    }
+                }
+        }
+        
+        // Initial load
+        lastFirebaseUserId = authRepository.getCurrentUser()?.uid
         loadCurrentUser()
         refreshDashboard()
     }
     
-    private fun loadCurrentUser() {
+    fun loadCurrentUser() {
         viewModelScope.launch {
-            val userResult = authRepository.getCurrentUserData()
-            if (userResult.isSuccess) {
-                _currentUser.value = userResult.getOrNull()
-            }
-            
-            val roleResult = authRepository.checkUserRole()
-            if (roleResult.isSuccess) {
-                _userRole.value = roleResult.getOrNull()
-            }
+            loadCurrentUserInternal()
+        }
+    }
+    
+    private suspend fun loadCurrentUserInternal() {
+        val userResult = authRepository.getCurrentUserData()
+        if (userResult.isSuccess) {
+            _currentUser.value = userResult.getOrNull()
+        }
+        
+        val roleResult = authRepository.checkUserRole()
+        if (roleResult.isSuccess) {
+            _userRole.value = roleResult.getOrNull()
         }
     }
     

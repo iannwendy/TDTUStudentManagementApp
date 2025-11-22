@@ -143,6 +143,7 @@ Detailed documentation is stored in the [`docs/`](docs/) folder:
 - **[NETWORK_ERROR_FIX.md](docs/NETWORK_ERROR_FIX.md)**: Network error handling
 - **[DEBUG_LOGIN_ISSUES.md](docs/DEBUG_LOGIN_ISSUES.md)**: Debug login issues
 - **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)**: Testing guide
+- **[ERD Diagram](docs/erd.png)**: Entity Relationship Diagram (ERD) for database structure
 
 ## Database Structure
 

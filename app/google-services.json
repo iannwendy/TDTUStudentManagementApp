@@ -1,0 +1,29 @@
+{
+    "project_info": {
+      "project_number": "6792916557",
+      "project_id": "androidmidterm-ed4b4",
+      "storage_bucket": "androidmidterm-ed4b4.firebasestorage.app"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:6792916557:android:26ac34f837a7c15b86f604",
+          "android_client_info": {
+            "package_name": "com.example.tdtustudentinformationmanagement"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyDHsfZ-9ljgcFXZzLxL2Jm2C1QZ4ebgpIM"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

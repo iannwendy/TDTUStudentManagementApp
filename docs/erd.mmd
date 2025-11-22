@@ -14,7 +14,7 @@ erDiagram
     
     LOGIN_HISTORY {
         string id PK
-        string userId FK
+        string userId FK "references USER.id"
         timestamp loginTime
         string deviceInfo
         string ipAddress
@@ -22,7 +22,7 @@ erDiagram
     
     STUDENT {
         string id PK
-        string studentId
+        string studentId "business key unique"
         string name
         timestamp dateOfBirth
         string gender
@@ -39,7 +39,7 @@ erDiagram
     
     CERTIFICATE {
         string id PK
-        string studentId FK
+        string studentId FK "references STUDENT.studentId"
         string name
         string issuingOrganization
         timestamp issueDate
@@ -50,12 +50,5 @@ erDiagram
         timestamp updatedAt
     }
     
-    FIREBASE_STORAGE {
-        string profile_pictures
-        string certificates
-    }
-    
-    USER ||--o{ LOGIN_HISTORY : "has"
-    STUDENT ||--o{ CERTIFICATE : "has"
-    USER ||--|| FIREBASE_STORAGE : "stores avatar in"
-    CERTIFICATE ||--|| FIREBASE_STORAGE : "stores file in"
+    USER ||--o{ LOGIN_HISTORY : "has (userId -> USER.id)"
+    STUDENT ||--o{ CERTIFICATE : "has (studentId -> STUDENT.studentId)"

@@ -1,168 +1,179 @@
 # TDTU Student Information Management System
 
-Hệ thống quản lý thông tin sinh viên TDTU sử dụng Firebase Firestore và Android Jetpack Compose.
+Hệ thống quản lý thông tin sinh viên TDTU - Ứng dụng Android hiện đại được xây dựng với Jetpack Compose và Firebase.
 
-## Tính năng chính
+## 📋 Tổng quan
 
-### Quản lý người dùng
-- Đăng nhập hệ thống
-- Thay đổi ảnh đại diện
-- Xem danh sách người dùng
-- Thêm/sửa/xóa người dùng
+TDTU Student Information Management System là một ứng dụng Android quản lý toàn diện thông tin sinh viên và người dùng, được thiết kế để hỗ trợ các hoạt động quản lý của trường đại học. Hệ thống cung cấp các tính năng quản lý người dùng, quản lý sinh viên, theo dõi chứng chỉ và phân quyền truy cập linh hoạt.
+
+## 🏗️ Kiến trúc & Công nghệ
+
+### Kiến trúc
+- **MVVM (Model-View-ViewModel)**: Tách biệt logic nghiệp vụ và UI
+- **Repository Pattern**: Quản lý truy cập dữ liệu tập trung
+- **Dependency Injection**: Sử dụng Hilt để quản lý dependencies
+
+### Công nghệ sử dụng
+- **UI Framework**: Jetpack Compose - Modern Android UI toolkit
+- **Backend**: Firebase
+  - **Firebase Authentication**: Xác thực người dùng
+  - **Cloud Firestore**: Database NoSQL real-time
+  - **Firebase Storage**: Lưu trữ file (ảnh đại diện, chứng chỉ)
+- **Dependency Injection**: Hilt (Dagger)
+- **Asynchronous**: Kotlin Coroutines & Flow
+- **Image Loading**: Coil
+
+## ✨ Tính năng chính
+
+### 🔐 Xác thực & Bảo mật
+- Đăng nhập/Đăng xuất với Email/Password
+- Quản lý phiên đăng nhập
+- Theo dõi lịch sử đăng nhập (chỉ Admin)
 - Quản lý trạng thái tài khoản (Normal/Locked)
-- Xem lịch sử đăng nhập
 
-### Quản lý sinh viên
-- Xem danh sách sinh viên
-- Thêm/sửa/xóa sinh viên
-- Sắp xếp sinh viên theo nhiều tiêu chí
-- Tìm kiếm sinh viên
+### 👥 Quản lý người dùng
+- Xem danh sách người dùng với tìm kiếm và lọc
+- Thêm/Sửa/Xóa người dùng (Admin only)
+- Quản lý vai trò người dùng (Admin/Manager/Employee)
+- Cập nhật ảnh đại diện
+- Xem lịch sử đăng nhập của người dùng (Admin only)
+
+### 🎓 Quản lý sinh viên
+- Xem danh sách sinh viên với tìm kiếm nâng cao
+- Thêm/Sửa/Xóa thông tin sinh viên
+- Sắp xếp sinh viên theo nhiều tiêu chí (tên, GPA, năm học, v.v.)
 - Quản lý chứng chỉ sinh viên
+- Xem thông tin chi tiết sinh viên
 
-### Phân quyền người dùng
-- **Admin**: Toàn quyền truy cập
-- **Manager**: Quản lý sinh viên và xem thông tin người dùng
-- **Employee**: Chỉ xem thông tin
+### 📜 Quản lý chứng chỉ
+- Thêm/Sửa/Xóa chứng chỉ cho sinh viên
+- Upload và lưu trữ file chứng chỉ
+- Theo dõi ngày cấp và ngày hết hạn
 
-## Cài đặt Firebase
+### 📊 Dashboard
+- Tổng quan thống kê hệ thống
+- Số lượng người dùng, sinh viên
+- Truy cập nhanh đến các chức năng chính
 
-### Bước 1: Tạo Firebase Project
-1. Truy cập [Firebase Console](https://console.firebase.google.com/)
-2. Tạo project mới với tên "TDTU Student Management"
-3. Bật Google Analytics (tùy chọn)
+### 📥 Nhập/Xuất dữ liệu
+- Import sinh viên từ file CSV
+- Export danh sách sinh viên ra CSV
+- Import/Export chứng chỉ
 
-### Bước 2: Thêm Android App
-1. Trong Firebase Console, chọn "Add app" > Android
-2. Nhập package name: `com.example.tdtustudentinformationmanagement`
-3. Tải file `google-services.json` và thay thế file mẫu trong thư mục `app/`
+## 🔑 Hệ thống phân quyền
 
-### Bước 3: Cấu hình Firebase Services
-1. **Authentication**:
-   - Vào Authentication > Sign-in method
-   - Bật Email/Password
-   - Tạo admin account: `admin@tdtu.edu.vn` với password `admin123456`
+Hệ thống hỗ trợ 3 cấp độ phân quyền:
 
-2. **Firestore Database**:
-   - Vào Firestore Database
-   - Tạo database ở chế độ test mode
-   - Cấu hình security rules:
+### 👑 Admin
+- **Toàn quyền truy cập** hệ thống
+- Quản lý người dùng (thêm/sửa/xóa)
+- Quản lý sinh viên và chứng chỉ
+- Xem lịch sử đăng nhập của tất cả người dùng
+- Import/Export dữ liệu
 
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users collection
-    match /users/{userId} {
-      allow read, write: if request.auth != null;
-    }
-    
-    // Students collection
-    match /students/{studentId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['ADMIN', 'MANAGER']);
-    }
-    
-    // Certificates collection
-    match /certificates/{certificateId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['ADMIN', 'MANAGER']);
-    }
-    
-    // Login history collection
-    match /login_history/{historyId} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
+### 👔 Manager
+- Xem danh sách người dùng (không xem lịch sử đăng nhập)
+- Quản lý sinh viên và chứng chỉ (thêm/sửa/xóa)
+- Import/Export dữ liệu
+- Cập nhật ảnh đại diện cá nhân
+
+### 👤 Employee
+- Xem danh sách người dùng (không xem lịch sử đăng nhập)
+- Xem danh sách sinh viên (chỉ đọc)
+- Cập nhật ảnh đại diện cá nhân
+
+## 📁 Cấu trúc dự án
+
+```
+app/src/main/java/com/example/tdtustudentinformationmanagement/
+├── data/
+│   ├── firebase/          # Cấu hình Firebase
+│   ├── model/             # Data models (User, Student, Certificate)
+│   └── repository/        # Repository layer (Auth, User, Student, Storage)
+├── di/                    # Dependency Injection modules
+├── ui/
+│   ├── screens/           # UI Screens (Compose)
+│   │   ├── dashboard/
+│   │   ├── importexport/
+│   │   ├── profile/
+│   │   ├── students/
+│   │   └── users/
+│   ├── theme/             # Material Design theme
+│   └── viewmodel/         # ViewModels (MVVM)
+└── utils/                 # Utility functions (CSV parsing)
 ```
 
-3. **Storage**:
-   - Vào Storage
-   - Tạo bucket mặc định
-   - Cấu hình security rules:
+## 🚀 Bắt đầu
 
-```javascript
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    // Profile pictures - allow users to upload/update their own profile picture
-    // Path format: profile_pictures/{userId}.jpg
-    match /profile_pictures/{fileName} {
-      allow read, write: if request.auth != null && 
-        fileName.matches(request.auth.uid + '\\.jpg$');
-    }
-    match /certificates/{allPaths=**} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
+### Yêu cầu hệ thống
+- Android Studio Hedgehog | 2023.1.1 hoặc mới hơn
+- JDK 17
+- Android SDK 24+ (Android 7.0+)
+- Firebase project đã được cấu hình
 
-### Bước 4: Cấu trúc Database
+### Cài đặt
 
-#### Users Collection
-```json
-{
-  "id": "user_id",
-  "name": "Tên người dùng",
-  "age": 25,
-  "phoneNumber": "0123456789",
-  "status": "NORMAL",
-  "role": "ADMIN",
-  "profilePictureUrl": "url_to_image",
-  "createdAt": "timestamp",
-  "updatedAt": "timestamp"
-}
-```
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/iannwendy/TDTUStudentManagementApp.git
+   cd TDTUStudentManagementApp
+   ```
 
-#### Students Collection
-```json
-{
-  "id": "student_id",
-  "studentId": "SV001",
-  "name": "Tên sinh viên",
-  "dateOfBirth": "timestamp",
-  "gender": "MALE",
-  "address": "Địa chỉ",
-  "phoneNumber": "0123456789",
-  "email": "email@example.com",
-  "major": "Công nghệ thông tin",
-  "yearOfStudy": 3,
-  "gpa": 3.5,
-  "status": "ACTIVE",
-  "profilePictureUrl": "url_to_image",
-  "createdAt": "timestamp",
-  "updatedAt": "timestamp"
-}
-```
+2. **Cấu hình Firebase**
+   - Tạo Firebase project tại [Firebase Console](https://console.firebase.google.com/)
+   - Tải file `google-services.json` và đặt vào thư mục `app/`
+   - Xem hướng dẫn chi tiết trong [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
 
-#### Certificates Collection
-```json
-{
-  "id": "certificate_id",
-  "studentId": "student_id",
-  "name": "Tên chứng chỉ",
-  "issuingOrganization": "Tổ chức cấp",
-  "issueDate": "timestamp",
-  "expiryDate": "timestamp",
-  "certificateUrl": "url_to_certificate",
-  "description": "Mô tả",
-  "createdAt": "timestamp",
-  "updatedAt": "timestamp"
-}
-```
+3. **Sync và Build**
+   - Mở project trong Android Studio
+   - Sync project với Gradle files
+   - Build và chạy ứng dụng
 
-## Chạy ứng dụng
+4. **Đăng nhập**
+   - Tài khoản Admin mặc định: `admin@tdtu.edu.vn` / `admin123456`
+   - Hoặc tạo tài khoản mới thông qua Firebase Console
 
-1. Sync project với Gradle
-2. Build và chạy ứng dụng
-3. Đăng nhập với admin account: `admin@tdtu.edu.vn` / `admin123456`
+## 📚 Tài liệu
 
-## Lưu ý quan trọng
+Các tài liệu chi tiết được lưu trong thư mục [`docs/`](docs/):
 
-- File `google-services.json` mẫu chỉ để tham khảo, cần thay thế bằng file thật từ Firebase Console
-- Đảm bảo package name trong Firebase Console khớp với package name trong ứng dụng
-- Cấu hình security rules phù hợp với yêu cầu bảo mật của hệ thống
-- Test kỹ các chức năng authentication và database operations trước khi deploy
+- **[FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**: Hướng dẫn cài đặt và cấu hình Firebase
+- **[FIREBASE_TROUBLESHOOTING.md](docs/FIREBASE_TROUBLESHOOTING.md)**: Xử lý sự cố Firebase
+- **[STORAGE_RULES_FIX.md](docs/STORAGE_RULES_FIX.md)**: Cấu hình Security Rules cho Storage
+- **[NETWORK_ERROR_FIX.md](docs/NETWORK_ERROR_FIX.md)**: Xử lý lỗi mạng
+- **[DEBUG_LOGIN_ISSUES.md](docs/DEBUG_LOGIN_ISSUES.md)**: Debug các vấn đề đăng nhập
+- **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)**: Hướng dẫn testing
+
+## 🗄️ Cấu trúc Database
+
+### Collections
+
+- **users**: Thông tin người dùng hệ thống
+- **students**: Thông tin sinh viên
+- **certificates**: Chứng chỉ của sinh viên
+- **login_history**: Lịch sử đăng nhập
+
+Xem chi tiết cấu trúc database trong [docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)
+
+## 🔒 Bảo mật
+
+- Xác thực người dùng qua Firebase Authentication
+- Security Rules cho Firestore và Storage
+- Phân quyền truy cập theo vai trò
+- Chỉ Admin mới có thể xem lịch sử đăng nhập
+
+## 🤝 Đóng góp
+
+Mọi đóng góp đều được chào đón! Vui lòng tạo Issue hoặc Pull Request.
+
+## 📝 License
+
+Dự án này thuộc về TDTU (Trường Đại học Tôn Đức Thắng).
+
+## 👨‍💻 Tác giả
+
+**iannwendy** - [GitHub](https://github.com/iannwendy)
+
+---
+
+**Lưu ý**: Đảm bảo đã cấu hình đúng Firebase project và Security Rules trước khi sử dụng ứng dụng trong môi trường production.

@@ -62,6 +62,8 @@ fun AppContent(authRepository: AuthRepository) {
         LoginScreen(
             onLoginSuccess = {
                 // Login success - auth state will automatically update via the listener
+                // But status check happens in AuthRepository before returning success
+                // If account is locked, signOut is called and auth state will be null
             }
         )
     }

@@ -7,6 +7,7 @@ import com.example.tdtustudentinformationmanagement.data.model.UserRole
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
@@ -39,13 +40,44 @@ class AuthRepository @Inject constructor(
             }
             
             val result = firebaseConfig.auth.signInWithEmailAndPassword(email, password).await()
-            println("✅ [DEBUG] Login successful for: $email")
-            result.user?.let { ensureUserDocument(it) }
+            println("✅ [DEBUG] Firebase Auth login successful for: $email")
             
-            // Add login history
-            result.user?.let { user ->
+            // Check if user account is locked BEFORE ensuring user document
+            // This prevents creating a new user document with NORMAL status if user is locked
+            result.user?.let { firebaseUser ->
+                val userDataResult = userRepository.getUserById(firebaseUser.uid)
+                if (userDataResult.isSuccess) {
+                    val userData = userDataResult.getOrNull()
+                    if (userData != null) {
+                        // User document exists, check status
+                        if (userData.status == com.example.tdtustudentinformationmanagement.data.model.UserStatus.LOCKED) {
+                            // Account is locked, sign out immediately BEFORE returning error
+                            println("❌ [DEBUG] Account is locked for: $email - signing out immediately")
+                            try {
+                                firebaseConfig.auth.signOut()
+                                println("✅ [DEBUG] Signed out locked account")
+                                // Longer delay to ensure signOut completes and error is processed
+                                // before auth state change propagates to MainActivity
+                                // This gives LoginViewModel time to process the error
+                                delay(300)
+                            } catch (signOutError: Exception) {
+                                println("⚠️ [DEBUG] Error during signOut: ${signOutError.message}")
+                            }
+                            return Result.failure(Exception("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."))
+                        }
+                    }
+                } else {
+                    // If we can't fetch user data, log warning but don't block login
+                    // (user document might not exist yet, will be created by ensureUserDocument)
+                    println("⚠️ [DEBUG] Could not fetch user data for ${firebaseUser.uid}: ${userDataResult.exceptionOrNull()?.message}")
+                }
+                
+                // Only ensure user document if account is not locked
+                ensureUserDocument(firebaseUser)
+                
+                // Add login history only if account is not locked
                 val loginHistory = LoginHistory(
-                    userId = user.uid,
+                    userId = firebaseUser.uid,
                     deviceInfo = "Android Device", // You can get more detailed device info
                     ipAddress = "Unknown" // You can get IP address if needed
                 )
@@ -81,6 +113,17 @@ class AuthRepository @Inject constructor(
                         )
                         userRepository.createUser(adminUser)
                         println("✅ [DEBUG] Admin user document created in Firestore")
+                        
+                        // Check status after creating (should be NORMAL, but check for consistency)
+                        val userDataResult = userRepository.getUserById(user.uid)
+                        if (userDataResult.isSuccess) {
+                            val userData = userDataResult.getOrNull()
+                            if (userData != null && userData.status == com.example.tdtustudentinformationmanagement.data.model.UserStatus.LOCKED) {
+                                println("❌ [DEBUG] Newly created admin account is locked (unexpected)")
+                                firebaseConfig.auth.signOut()
+                                return Result.failure(Exception("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."))
+                            }
+                        }
                     }
                     
                     Result.success(createResult.user)

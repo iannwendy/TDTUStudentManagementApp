@@ -185,6 +185,35 @@ class MainViewModel @Inject constructor(
         }
     }
     
+    fun updateUserInfo(
+        name: String,
+        email: String,
+        phoneNumber: String,
+        age: Int
+    ) {
+        val userId = _currentUser.value?.id ?: return
+        viewModelScope.launch {
+            val currentUser = _currentUser.value ?: return@launch
+            val updatedUser = currentUser.copy(
+                name = name,
+                email = email,
+                phoneNumber = phoneNumber,
+                age = age
+            )
+            val updateResult = userRepository.updateUser(userId, updatedUser)
+            if (updateResult.isSuccess) {
+                _currentUser.value = updatedUser
+                _profilePictureState.value = ProfilePictureState(
+                    successMessage = "Cập nhật thông tin thành công"
+                )
+            } else {
+                _profilePictureState.value = ProfilePictureState(
+                    errorMessage = updateResult.exceptionOrNull()?.message ?: "Không thể cập nhật thông tin"
+                )
+            }
+        }
+    }
+    
     suspend fun logout() {
         _isLoggingOut.value = true
         try {

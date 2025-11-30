@@ -2,6 +2,7 @@ package com.example.tdtustudentinformationmanagement.ui.screens.dashboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,18 +22,25 @@ import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.outlined.PersonSearch
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.tdtustudentinformationmanagement.data.model.User
@@ -101,57 +111,80 @@ fun DashboardScreen(
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
-            )
+                containerColor = Color.White
+            ),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.Assignment,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Outlined.Assignment,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                         Text(
                             text = "Theo dõi hoạt động",
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    Button(
+                    OutlinedButton(
                         onClick = onRefresh,
                         enabled = !dashboardState.isLoading
                     ) {
-                        Icon(Icons.Outlined.Refresh, contentDescription = null)
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(Icons.Outlined.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text("Làm mới")
                     }
                 }
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 ActivityRow(
                     title = "Người dùng đang hoạt động",
                     value = usersState.users.count { it.status.name == "NORMAL" }.toString(),
-                    highlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    icon = Icons.Outlined.People,
+                    highlightColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                    iconTintColor = MaterialTheme.colorScheme.primary
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
 
                 ActivityRow(
                     title = "Tài khoản bị khóa",
                     value = dashboardState.lockedUsers.toString(),
-                    highlightColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+                    icon = Icons.Outlined.Lock,
+                    highlightColor = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                    iconTintColor = MaterialTheme.colorScheme.error
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
 
                 ActivityRow(
                     title = "Sinh viên đang theo học",
                     value = studentsState.students.count { it.status.name == "ACTIVE" }.toString(),
-                    highlightColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
+                    icon = Icons.Outlined.School,
+                    highlightColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f),
+                    iconTintColor = MaterialTheme.colorScheme.secondary
                 )
             }
         }
@@ -162,24 +195,36 @@ fun DashboardScreen(
 private fun SummaryRow(
     dashboardState: DashboardState
 ) {
-    Column(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SummaryCard(
             title = "Tổng số người dùng",
             value = dashboardState.totalUsers.toString(),
-            backgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            icon = Icons.Outlined.People,
+            iconBackgroundColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+            iconTintColor = MaterialTheme.colorScheme.primary,
+            backgroundColor = Color.White,
+            modifier = Modifier.weight(1f)
         )
         SummaryCard(
             title = "Sinh viên trong hệ thống",
             value = dashboardState.totalStudents.toString(),
-            backgroundColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)
+            icon = Icons.Outlined.School,
+            iconBackgroundColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.15f),
+            iconTintColor = MaterialTheme.colorScheme.secondary,
+            backgroundColor = Color.White,
+            modifier = Modifier.weight(1f)
         )
         SummaryCard(
             title = "Sinh viên tốt nghiệp",
             value = dashboardState.graduatedStudents.toString(),
-            backgroundColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f)
+            icon = Icons.Outlined.TrendingUp,
+            iconBackgroundColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.15f),
+            iconTintColor = MaterialTheme.colorScheme.tertiary,
+            backgroundColor = Color.White,
+            modifier = Modifier.weight(1f)
         )
     }
 }
@@ -188,6 +233,9 @@ private fun SummaryRow(
 private fun SummaryCard(
     title: String,
     value: String,
+    icon: ImageVector,
+    iconBackgroundColor: Color,
+    iconTintColor: Color,
     backgroundColor: Color,
     modifier: Modifier = Modifier
 ) {
@@ -195,18 +243,46 @@ private fun SummaryCard(
         modifier = modifier
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(20.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = title, style = MaterialTheme.typography.bodyMedium)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(iconBackgroundColor),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = iconTintColor,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = value,
                 style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -224,24 +300,50 @@ private fun QuickAccessCard(
     Card(
         modifier = modifier,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+            containerColor = Color.White
         ),
         onClick = onClick,
-        enabled = enabled
+        enabled = enabled,
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
@@ -250,22 +352,49 @@ private fun QuickAccessCard(
 private fun ActivityRow(
     title: String,
     value: String,
-    highlightColor: Color
+    icon: ImageVector,
+    highlightColor: Color,
+    iconTintColor: Color
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .background(highlightColor, RoundedCornerShape(12.dp))
-            .padding(12.dp),
+            .background(highlightColor, RoundedCornerShape(16.dp))
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = title, style = MaterialTheme.typography.bodyMedium)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(iconTintColor.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTintColor,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
         Text(
             text = value,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

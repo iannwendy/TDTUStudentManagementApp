@@ -27,20 +27,29 @@ class LoginViewModel @Inject constructor(
     
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            _loginState.value = _loginState.value.copy(isLoading = true, isError = false, errorMessage = null)
+            _loginState.value = _loginState.value.copy(
+                isLoading = true, 
+                isError = false, 
+                isSuccess = false,
+                errorMessage = null
+            )
             
             val result = authRepository.signIn(email, password)
             
             if (result.isSuccess) {
                 _loginState.value = _loginState.value.copy(
                     isLoading = false,
-                    isSuccess = true
+                    isSuccess = true,
+                    isError = false
                 )
             } else {
+                val errorMsg = result.exceptionOrNull()?.message ?: "Login failed"
+                println("❌ [LoginViewModel] Login error: $errorMsg")
                 _loginState.value = _loginState.value.copy(
                     isLoading = false,
                     isError = true,
-                    errorMessage = result.exceptionOrNull()?.message ?: "Login failed"
+                    isSuccess = false, // Ensure success is false when there's an error
+                    errorMessage = errorMsg
                 )
             }
         }

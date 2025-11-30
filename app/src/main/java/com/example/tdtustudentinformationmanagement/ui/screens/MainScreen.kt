@@ -6,12 +6,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.automirrored.outlined.ListAlt
@@ -20,6 +27,7 @@ import androidx.compose.material.icons.outlined.Dashboard
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,6 +41,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,9 +56,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.Image
+import com.example.tdtustudentinformationmanagement.R
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tdtustudentinformationmanagement.data.model.User
 import com.example.tdtustudentinformationmanagement.data.model.UserRole
@@ -250,21 +266,60 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column {
-                        Text("TDTU Student Management")
-                        AnimatedVisibility(
-                            visible = currentUser != null,
-                            enter = fadeIn(),
-                            exit = fadeOut()
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(Color.White),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = currentUser?.name ?: "",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            Image(
+                                painter = painterResource(id = R.drawable.logo_2),
+                                contentDescription = "TDTU Logo",
+                                modifier = Modifier.size(40.dp),
+                                contentScale = ContentScale.Fit
                             )
+                        }
+                        Column {
+                            Text(
+                                text = "TDTU Student Management",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            AnimatedVisibility(
+                                visible = currentUser != null,
+                                enter = fadeIn(),
+                                exit = fadeOut()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Person,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(14.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = currentUser?.name ?: "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
                         }
                     }
                 },
+                colors = androidx.compose.material3.TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                ),
                 actions = {
                     IconButton(
                         onClick = {
@@ -402,8 +457,12 @@ fun MainScreen(
 
                     MainSection.PROFILE -> ProfileScreen(
                         user = currentUser,
+                        userRole = userRole,
                         profilePictureState = profilePictureState,
-                        onChangePhoto = { imagePicker.launch("image/*") }
+                        onChangePhoto = { imagePicker.launch("image/*") },
+                        onUpdateUser = { name, email, phoneNumber, age ->
+                            mainViewModel.updateUserInfo(name, email, phoneNumber, age)
+                        }
                     )
                 }
             }

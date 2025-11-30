@@ -52,6 +52,9 @@ fun LoginScreen(
             loginState.isError -> {
                 val errorMsg = loginState.errorMessage ?: "Login failed"
                 errorMessage = when {
+                    errorMsg.contains("bị khóa", ignoreCase = true) || 
+                    errorMsg.contains("locked", ignoreCase = true) -> 
+                        "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."
                     errorMsg.contains("network", ignoreCase = true) || 
                     errorMsg.contains("timeout", ignoreCase = true) -> 
                         "Lỗi kết nối mạng. Vui lòng kiểm tra internet và thử lại."

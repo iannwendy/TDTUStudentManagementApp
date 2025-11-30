@@ -1,0 +1,52 @@
+studentId,name,dateOfBirth,gender,address,phoneNumber,email,major,yearOfStudy,gpa,status
+SV101,Bui Van Cuong,2000-03-20,MALE,123 Le Duan,0912000101,cuong.bui101@tdtu.edu.vn,Ky thuat phan mem,4,3.55,ACTIVE
+SV102,Duong Thi Mai,2001-08-14,FEMALE,234 Tran Phu,0912000102,mai.duong102@tdtu.edu.vn,Quan tri du lich,3,3.28,ACTIVE
+SV103,Hoang Duc Thang,2002-12-05,MALE,345 Bach Dang,0912000103,thang.hoang103@tdtu.edu.vn,Thiet ke ky thuat,2,3.72,ACTIVE
+SV104,Ly Thi Hoa,2000-06-18,FEMALE,456 Nguyen Du,0912000104,hoa.ly104@tdtu.edu.vn,Quan ly xay dung,4,3.15,ACTIVE
+SV105,Ngo Minh Khoi,2001-11-30,MALE,567 Le Van Viet,0912000105,khoi.ngo105@tdtu.edu.vn,He thong thong tin,3,3.89,GRADUATED
+SV106,Phan Thi Linh,2002-04-22,FEMALE,678 Vo Van Ngan,0912000106,linh.phan106@tdtu.edu.vn,Thiet ke thoi trang,2,3.31,ACTIVE
+SV107,Quach Van Dat,2000-09-11,MALE,789 Nguyen Van Troi,0912000107,dat.quach107@tdtu.edu.vn,Ky thuat o to,4,2.99,ACTIVE
+SV108,Trinh Thi Van,2001-02-28,FEMALE,890 Hoang Van Thu,0912000108,van.trinh108@tdtu.edu.vn,Quan tri khach san,3,3.64,ACTIVE
+SV109,Vuong Minh Hieu,2002-07-16,MALE,901 Pham Van Dong,0912000109,hieu.vuong109@tdtu.edu.vn,Ky thuat dien,2,3.42,ACTIVE
+SV110,Bui Thi Lan,2000-01-09,FEMALE,112 Le Hong Phong,0912000110,lan.bui110@tdtu.edu.vn,Thiet ke cong nghiep,4,3.18,ACTIVE
+SV111,Duong Van Huy,2001-05-25,MALE,223 Nguyen Van Thoai,0912000111,huy.duong111@tdtu.edu.vn,Quan ly dat dai,3,3.51,ACTIVE
+SV112,Hoang Thi Nga,2002-10-08,FEMALE,334 Tran Binh Trong,0912000112,nga.hoang112@tdtu.edu.vn,Thiet ke do hoa,2,3.76,ACTIVE
+SV113,Ly Van Khanh,2000-03-19,MALE,445 Le Quy Don,0912000113,khanh.ly113@tdtu.edu.vn,Ky thuat may,4,3.09,ACTIVE
+SV114,Ngo Thi Phuong,2001-08-02,FEMALE,556 Nguyen Van Cu,0912000114,phuong.ngo114@tdtu.edu.vn,Quan tri nhan su,3,3.57,ACTIVE
+SV115,Phan Van Tuan,2002-12-15,MALE,667 Vo Thi Sau,0912000115,tuan.phan115@tdtu.edu.vn,Thiet ke noi that,2,3.33,ACTIVE
+SV116,Quach Thi Huong,2000-06-28,FEMALE,778 Tran Hung Dao,0912000116,huong.quach116@tdtu.edu.vn,Ky thuat xay dung,4,3.68,GRADUATED
+SV117,Trinh Van Dung,2001-11-10,MALE,889 Le Loi,0912000117,dung.trinh117@tdtu.edu.vn,Quan ly cong trinh,3,3.24,ACTIVE
+SV118,Vuong Thi Thao,2002-04-23,FEMALE,990 Nguyen Hue,0912000118,thao.vuong118@tdtu.edu.vn,Thiet ke ky thuat,2,3.81,ACTIVE
+SV119,Bui Van Quang,2000-09-06,MALE,101 Hai Ba Trung,0912000119,quang.bui119@tdtu.edu.vn,Ky thuat co khi,4,2.87,ACTIVE
+SV120,Duong Thi Nhung,2001-02-19,FEMALE,212 Cach Mang Thang 8,0912000120,nhung.duong120@tdtu.edu.vn,Quan tri kinh doanh,3,3.46,ACTIVE
+SV121,Hoang Van Sang,2002-07-03,MALE,323 Phan Dang Luu,0912000121,sang.hoang121@tdtu.edu.vn,Thiet ke thoi trang,2,3.19,ACTIVE
+SV122,Ly Thi Thuy,2000-01-26,FEMALE,434 Dien Bien Phu,0912000122,thuy.ly122@tdtu.edu.vn,Ky thuat dien tu,4,3.62,ACTIVE
+SV123,Ngo Van Tien,2001-05-10,MALE,545 Nguyen Van Cu,0912000123,tien.ngo123@tdtu.edu.vn,Quan ly du an,3,3.38,ACTIVE
+SV124,Phan Thi Trang,2002-10-23,FEMALE,656 Vo Van Tan,0912000124,trang.phan124@tdtu.edu.vn,Thiet ke do hoa,2,3.74,ACTIVE
+SV125,Quach Van Hiep,2000-03-07,MALE,767 Ly Tu Trong,0912000125,hiep.quach125@tdtu.edu.vn,Ky thuat may tinh,4,3.12,ACTIVE
+SV126,Trinh Thi Dieu,2001-08-20,FEMALE,878 Tran Quoc Toan,0912000126,dieu.trinh126@tdtu.edu.vn,Quan tri marketing,3,3.55,ACTIVE
+SV127,Vuong Van Long,2002-12-13,MALE,989 Mac Dinh Chi,0912000127,long.vuong127@tdtu.edu.vn,Thiet ke cong nghiep,2,3.29,ACTIVE
+SV128,Bui Thi My,2000-06-26,FEMALE,100 Ly Chinh Thang,0912000128,my.bui128@tdtu.edu.vn,Ky thuat hoa hoc,4,3.83,GRADUATED
+SV129,Duong Van Phuc,2001-11-09,MALE,211 Nguyen Thi Minh Khai,0912000129,phuc.duong129@tdtu.edu.vn,Quan ly tai chinh,3,3.17,ACTIVE
+SV130,Hoang Thi Uyen,2002-04-22,FEMALE,322 Ho Tung Mau,0912000130,uyen.hoang130@tdtu.edu.vn,Thiet ke ky thuat,2,3.61,ACTIVE
+SV131,Ly Van Thanh,2000-09-05,MALE,433 Pasteur,0912000131,thanh.ly131@tdtu.edu.vn,Ky thuat moi truong,4,3.35,ACTIVE
+SV132,Ngo Thi Xuan,2001-02-18,FEMALE,544 Nguyen Trong Tuyen,0912000132,xuan.ngo132@tdtu.edu.vn,Quan tri chuoi cung ung,3,3.48,ACTIVE
+SV133,Phan Van Duy,2002-07-01,MALE,655 Nguyen Khac Nhu,0912000133,duy.phan133@tdtu.edu.vn,Thiet ke thoi trang,2,3.22,ACTIVE
+SV134,Quach Thi Giang,2000-01-14,FEMALE,766 Nguyen Cong Tru,0912000134,giang.quach134@tdtu.edu.vn,Ky thuat nang luong,4,3.66,ACTIVE
+SV135,Trinh Van Kien,2001-05-27,MALE,877 Pham Ngu Lao,0912000135,kien.trinh135@tdtu.edu.vn,Quan ly chat luong,3,3.41,ACTIVE
+SV136,Vuong Thi Loan,2002-10-10,FEMALE,988 Nguyen Kiem,0912000136,loan.vuong136@tdtu.edu.vn,Thiet ke do hoa,2,3.78,ACTIVE
+SV137,Bui Van Manh,2000-03-24,MALE,199 Hai Thuong Lan Ong,0912000137,manh.bui137@tdtu.edu.vn,Ky thuat vien thong,4,3.14,ACTIVE
+SV138,Duong Thi Oanh,2001-08-07,FEMALE,210 Nguyen Tri Phuong,0912000138,oanh.duong138@tdtu.edu.vn,Quan tri nhan luc,3,3.59,ACTIVE
+SV139,Hoang Van Phat,2002-12-20,MALE,321 Nguyen Binh Khiem,0912000139,phat.hoang139@tdtu.edu.vn,Thiet ke noi that,2,3.27,ACTIVE
+SV140,Ly Thi Quynh,2000-06-03,FEMALE,432 Tran Cao Van,0912000140,quynh.ly140@tdtu.edu.vn,Ky thuat sinh hoc,4,3.85,GRADUATED
+SV141,Ngo Van Son,2001-11-16,MALE,543 Nguyen Van Linh,0912000141,son.ngo141@tdtu.edu.vn,Quan ly cong nghiep,3,3.32,ACTIVE
+SV142,Phan Thi Tuyet,2002-04-29,FEMALE,654 Nguyen Huu Canh,0912000142,tuyet.phan142@tdtu.edu.vn,Thiet ke ky thuat,2,3.63,ACTIVE
+SV143,Quach Van Vinh,2000-09-12,MALE,765 Truong Dinh,0912000143,vinh.quach143@tdtu.edu.vn,Ky thuat vat lieu,4,3.19,ACTIVE
+SV144,Trinh Thi Yen,2001-02-25,FEMALE,876 Phan Chu Trinh,0912000144,yen.trinh144@tdtu.edu.vn,Quan tri thong tin,3,3.52,ACTIVE
+SV145,Vuong Van Anh,2002-07-08,MALE,987 Nguyen Thanh Y,0912000145,anh.vuong145@tdtu.edu.vn,Thiet ke thoi trang,2,3.36,ACTIVE
+SV146,Bui Thi Binh,2000-01-21,FEMALE,198 Nguyen Hong Dao,0912000146,binh.bui146@tdtu.edu.vn,Ky thuat che tao,4,3.71,ACTIVE
+SV147,Duong Van Cuong,2001-05-04,MALE,209 Nguyen Phuc Nguyen,0912000147,cuong.duong147@tdtu.edu.vn,Quan ly san xuat,3,3.25,ACTIVE
+SV148,Hoang Thi Dung,2002-10-17,FEMALE,320 Cao Thang,0912000148,dung.hoang148@tdtu.edu.vn,Thiet ke do hoa,2,3.58,ACTIVE
+SV149,Ly Van Em,2000-03-30,MALE,431 Nguyen Huu Tho,0912000149,em.ly149@tdtu.edu.vn,Ky thuat cong nghiep,4,3.13,ACTIVE
+SV150,Ngo Thi Phuong,2001-08-13,FEMALE,542 Huynh Tan Phat,0912000150,phuong.ngo150@tdtu.edu.vn,Quan tri chat luong,3,3.67,ACTIVE
+

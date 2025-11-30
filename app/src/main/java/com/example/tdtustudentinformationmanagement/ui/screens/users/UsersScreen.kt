@@ -1,5 +1,7 @@
 package com.example.tdtustudentinformationmanagement.ui.screens.users
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,14 +11,28 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockOpen
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Phone
+import androidx.compose.material.icons.outlined.Cake
+import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,12 +41,13 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -139,8 +156,30 @@ fun UsersScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onRefresh) {
-            Text("Làm mới danh sách")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Assignment,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.width(20.dp)
+                )
+                Text(
+                    text = "Danh sách người dùng",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            TextButton(onClick = onRefresh) {
+                Text("Làm mới danh sách")
+            }
         }
 
         if (uiState.isLoading) {
@@ -309,49 +348,200 @@ private fun UserCard(
     onRoleChange: (UserRole) -> Unit,
     onShowHistory: () -> Unit
 ) {
-    ElevatedCard(
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(user.name, style = MaterialTheme.typography.titleMedium)
-            Text(user.email, style = MaterialTheme.typography.bodyMedium)
-            Text("Điện thoại: ${user.phoneNumber}")
-            Text("Tuổi: ${user.age}")
-            Text("Trạng thái: ${user.status.name}")
-            Text("Quyền hạn: ${user.role.name}")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
+        Column(modifier = Modifier.padding(20.dp)) {
+            // Header với tên và avatar
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (canViewHistory) {
-                    TextButton(onClick = onShowHistory) {
-                        Icon(Icons.Outlined.History, contentDescription = null)
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Lịch sử đăng nhập")
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = user.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = user.email,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                // Badge cho trạng thái
+                Box(
+                    modifier = Modifier
+                        .background(
+                            if (user.status == UserStatus.NORMAL)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                            else
+                                MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                            RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = user.status.name,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (user.status == UserStatus.NORMAL)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Thông tin chi tiết
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                InfoRow(
+                    icon = Icons.Outlined.Phone,
+                    label = "Điện thoại",
+                    value = user.phoneNumber
+                )
+                InfoRow(
+                    icon = Icons.Outlined.Cake,
+                    label = "Tuổi",
+                    value = user.age.toString()
+                )
+                InfoRow(
+                    icon = Icons.Outlined.Person,
+                    label = "Quyền hạn",
+                    value = user.role.name
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Action buttons
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (canViewHistory) {
+                        OutlinedButton(
+                            onClick = onShowHistory
+                        ) {
+                            Icon(Icons.Outlined.History, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Lịch sử")
+                        }
+                    }
+                    if (canManage) {
+                        OutlinedButton(
+                            onClick = onEdit
+                        ) {
+                            Icon(Icons.Outlined.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Sửa")
+                        }
+                        OutlinedButton(
+                            onClick = onToggleStatus,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = if (user.status == UserStatus.NORMAL) 
+                                    MaterialTheme.colorScheme.error 
+                                else 
+                                    MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Icon(
+                                if (user.status == UserStatus.NORMAL) Icons.Outlined.Lock else Icons.Outlined.LockOpen,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(if (user.status == UserStatus.NORMAL) "Khóa" else "Mở khóa")
+                        }
                     }
                 }
                 if (canManage) {
-                    Row {
-                        TextButton(onClick = onEdit) {
-                            Text("Chỉnh sửa")
-                        }
-                        TextButton(onClick = onToggleStatus) {
-                            Text(if (user.status == UserStatus.NORMAL) "Khóa" else "Mở khóa")
-                        }
-                        TextButton(onClick = onDelete) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        OutlinedButton(
+                            onClick = onDelete,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Icon(Icons.Outlined.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text("Xóa")
                         }
                     }
                 }
             }
+
             if (canManage) {
+                Spacer(modifier = Modifier.height(16.dp))
                 RoleSelector(currentRole = user.role, onRoleChange = onRoleChange)
             }
         }
+    }
+}
+
+@Composable
+private fun InfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = "$label: ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
@@ -362,22 +552,40 @@ private fun RoleSelector(
 ) {
     var expanded by remember { mutableStateOf(false) }
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                RoundedCornerShape(12.dp)
+            )
+            .padding(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
     ) {
-        Text("Thay đổi quyền:", fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.width(8.dp))
-        OutlinedButton(onClick = { expanded = true }) {
-            Text(currentRole.name)
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            UserRole.entries.forEach { role ->
-                DropdownMenuItem(
-                    text = { Text(role.name) },
-                    onClick = {
-                        onRoleChange(role)
-                        expanded = false
-                    }
-                )
+        Text(
+            text = "Thay đổi quyền:",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Box {
+            OutlinedButton(
+                onClick = { expanded = true },
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(currentRole.name)
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                UserRole.entries.forEach { role ->
+                    DropdownMenuItem(
+                        text = { Text(role.name) },
+                        onClick = {
+                            onRoleChange(role)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }

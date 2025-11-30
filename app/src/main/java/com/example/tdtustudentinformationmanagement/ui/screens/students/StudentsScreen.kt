@@ -1,5 +1,6 @@
 package com.example.tdtustudentinformationmanagement.ui.screens.students
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,15 +11,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,6 +49,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.tdtustudentinformationmanagement.data.model.Certificate
@@ -168,17 +180,8 @@ fun StudentsScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Button(
-                onClick = onRefresh,
-                enabled = !uiState.isLoading
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = null,
-                    modifier = Modifier.width(18.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("Làm mới")
+            TextButton(onClick = onRefresh) {
+                Text("Làm mới danh sách")
             }
         }
 
@@ -334,31 +337,174 @@ private fun StudentCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(student.name, style = MaterialTheme.typography.titleMedium)
-            Text("MSSV: ${student.studentId}")
-            Text("Chuyên ngành: ${student.major}")
-            Text("Năm học: ${student.yearOfStudy}")
-            Text("GPA: ${student.gpa}")
-            Text("Trạng thái: ${student.status.name}")
-
-            Spacer(modifier = Modifier.height(12.dp))
-
+        Column(modifier = Modifier.padding(20.dp)) {
+            // Header với tên và avatar
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                TextButton(onClick = onDetail) { Text("Xem chi tiết") }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.1f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.School,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = student.name,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "MSSV: ${student.studentId}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                // Badge cho trạng thái
+                Box(
+                    modifier = Modifier
+                        .background(
+                            if (student.status == StudentStatus.ACTIVE)
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                            else
+                                MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                            RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = student.status.name,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = if (student.status == StudentStatus.ACTIVE)
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Thông tin chi tiết
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                StudentInfoRow(
+                    icon = Icons.Outlined.School,
+                    label = "Chuyên ngành",
+                    value = student.major
+                )
+                StudentInfoRow(
+                    icon = Icons.Outlined.Person,
+                    label = "Năm học",
+                    value = student.yearOfStudy.toString()
+                )
+                StudentInfoRow(
+                    icon = Icons.Outlined.School,
+                    label = "GPA",
+                    value = student.gpa.toString()
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Action buttons
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = onDetail
+                    ) {
+                        Icon(Icons.Outlined.Visibility, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Xem chi tiết")
+                    }
+                    if (canManage) {
+                        OutlinedButton(
+                            onClick = onEdit
+                        ) {
+                            Icon(Icons.Outlined.Edit, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Sửa")
+                        }
+                    }
+                }
                 if (canManage) {
-                    Row {
-                        TextButton(onClick = onEdit) { Text("Chỉnh sửa") }
-                        TextButton(onClick = onDelete) { Text("Xóa") }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        OutlinedButton(
+                            onClick = onDelete,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
+                        ) {
+                            Icon(Icons.Outlined.Delete, contentDescription = null, modifier = Modifier.size(18.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text("Xóa")
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun StudentInfoRow(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    value: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(18.dp)
+        )
+        Text(
+            text = "$label: ",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 
